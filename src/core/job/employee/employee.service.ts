@@ -1,12 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseInterceptors } from '@nestjs/common';
 import { ConsumeMessage } from 'amqplib';
 import { RabbitMQWorker } from '../shared/worker/rabbitmq-worker.decorator';
 import { RabbitMQTopicsEnum } from '../shared/worker/rabbitmq-topics.enum';
 import { BaseWorkerService } from '../shared/worker/base-worker.service';
+import { RabbitMQInterceptor } from 'src/core/rabbitmq/rabbitmq.interceptor';
 
 @Injectable()
 export class EmployeeService extends BaseWorkerService {
   @RabbitMQWorker(BaseWorkerService.getWorkerConfig(RabbitMQTopicsEnum.EMPLOYEE), BaseWorkerService.defaultErrorHandler)
+  @UseInterceptors(RabbitMQInterceptor)
   public async createEmployee(message: any, amqpMsg: ConsumeMessage): Promise<void> {
     console.log(new Date().toDateString());
     console.log('Processing message...');

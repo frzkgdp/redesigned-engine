@@ -12,6 +12,11 @@ export function RabbitMQWorker(
 ) => void {
   return RabbitSubscribe({
     ...config,
+    queueOptions: {
+      arguments: {
+        'x-match': 'any'
+      }
+    },
     errorHandler
   });
 }

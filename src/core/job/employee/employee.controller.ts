@@ -4,6 +4,7 @@ import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 interface EmployeeMessage {
   routingKey: string;
   data: any;
+  tenant: string;
 }
 
 @Controller('employee')
@@ -13,6 +14,6 @@ export class EmployeeController {
   // TODO: create a higher order function to handle publishing messages
   @Post()
   async createEmployee(@Body() body: EmployeeMessage) {
-    return this.amqpConnection.publish('extension_server_exchange', body.routingKey, body.data, { headers: { tenant: 'TENANT_NAME_HERE' } });
+    return this.amqpConnection.publish('extension_server_exchange', body.routingKey, body.data, { headers: { tenant: body.tenant } });
   }
 }

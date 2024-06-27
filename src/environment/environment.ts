@@ -1,5 +1,6 @@
 export default () => ({
   rabbitmq: {
+    tenant: process.env.RABBITMQ_TENANT,
     moduleOptions: {
       exchanges: [
         {

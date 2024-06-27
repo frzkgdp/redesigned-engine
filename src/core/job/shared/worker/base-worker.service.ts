@@ -12,12 +12,6 @@ import { RabbitMQTopicsEnum } from './rabbitmq-topics.enum';
  * This affects not only the `RabbitSubscribe` options but also the `RabbitSubscribe` error handler,
  * Some potential issue is that we can't inject TypeORM services to handle DB transaction when job failed,
  * or CacheService to check for rate limit.
- *
- * @ALTERNATIVE
- * We can register our subscribers without `RabbitSubscribe` decorator, this is possible by adding
- * `{ registerHandlers: false }` in the RabbitMQ module configuration. This way, we can register our
- * subscribers manually using the amqpConnection instance. While this approach allows us to inject services
- * into the handler class, it requires more complex work to register the handlers.
  */
 @Injectable()
 export class BaseWorkerService {
@@ -28,6 +22,7 @@ export class BaseWorkerService {
      * 2. OnFailed Job -> update job status to failed on DB
      * 3. Unknown error -> for now Reject Message, TODO: handle this case properly
      */
+    console.log(`Tenant: ${msg.properties.headers.tenant}`);
     console.error(`Error processing message: ${error.message}`);
     if (error.message === 'ERROR_RATE_LIMIT') {
       /**
